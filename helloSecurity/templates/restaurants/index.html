@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+{% block title %}맛집 목록{% endblock %}
+{% block content %}
+<h2>맛집 목록</h2>
+<a href="{{ url_for('restaurants.create') }}">+ 새 맛집</a>
+<ul>
+  {% for r in restaurants %}
+    <li>
+      <strong>{{ r.name }}</strong> — {{ r.address }}
+      <small>
+        {% for rel in r.tags %}[{{ rel.tag.name }}]{% endfor %}
+      </small>
+      <a href="{{ url_for('restaurants.edit', r_id=r.id) }}">수정</a>
+      <form action="{{ url_for('restaurants.delete', r_id=r.id) }}"
+            method="post" style="display:inline">
+        <button onclick="return confirm('삭제할까요?')">삭제</button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

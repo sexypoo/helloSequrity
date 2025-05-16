@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+{% if restaurant %}{% set title = '맛집 수정' %}{% else %}{% set title = '맛집 등록' %}{% endif %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h2>{{ title }}</h2>
+<form method="post">
+  이름 <input name="name" value="{{ restaurant.name if restaurant else '' }}"><br>
+  주소 <input name="address" value="{{ restaurant.address if restaurant else '' }}"><br>
+  설명 <textarea name="description">{{ restaurant.description if restaurant else '' }}</textarea><br>
+  별점 <input name="rating" value="{{restaurant.rating if restaurant else ''}}">
+  영업 시작시간 <input name="start_hour" type="time" value="{{restaurant.start_hour if restaurant else ''}}">
+  영업 종료시간 <input name="end_hour" type="time" value="{{restaurant.end_hour if restaurant else ''}}">
+  브레이크타임 <input name="breaktime" value="{{restaurant.breaktime if restaurant else ''}}">
+  태그<br>
+  {% for cat in categories %}
+<fieldset>
+  <legend>{{ cat.name }}</legend>
+  {% for tag in cat.tags %}
+    <label style="margin-right:12px">
+      <input type="checkbox" name="tags"
+             value="{{ tag.id }}"
+             {% if restaurant and tag.id in attached %}checked{% endif %}>
+      {{ tag.name }}
+    </label>
+  {% endfor %}
+</fieldset>
+{% endfor %}
+  <button type="submit">저장</button>
+</form>
+<a href="{{ url_for('restaurants.index') }}">← 목록</a>
+{% endblock %}

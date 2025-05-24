@@ -1,3 +1,5 @@
+# restaurant.py
+
 from flask import Blueprint, render_template, request, redirect, url_for
 from helloSecurity import db
 from helloSecurity.models import Restaurant, Tag, RestaurantTag, TagCategory
@@ -20,15 +22,17 @@ def index():
     
     search_q = Restaurant.query
 
-    if tag_ids:
+    if tag_ids: # 태그 선택되어 있으면
         search_q = (search_q.join(RestaurantTag)
                .filter(RestaurantTag.tag_id.in_(tag_ids))
                .group_by(Restaurant.id)
                .having(func.count(distinct(RestaurantTag.tag_id)) == len(tag_ids))
-               ) # 
+               )
+        # join - 식당x태그 수 -> filter - 선택 태그 (tag_ids) 해당하는 것만 필터링 -> group_by(restaurant) - 식당 한 개당 한 묶음
+        # having - 동일 태그 중복 카운트 막기 위해 (선택 태그 수 == 이 식당이 가진 태그 수) 일치 시에만 통과하도록
 
-    restaurants = search_q.order_by(Restaurant.id.desc()).all()
-    categories = TagCategory.query.order_by(TagCategory.id).all()
+    restaurants = search_q.order_by(Restaurant.id.desc()).all() # 조건 해당하는거 전부 가져오기
+    categories = TagCategory.query.order_by(TagCategory.id).all() # 미리 저장된 태그 db 가져오기
 
     return render_template("restaurants/main.html",
                            restaurants=restaurants,
@@ -43,7 +47,7 @@ def detail(r_id):
     return render_template("restaurants/detail.html", restaurant=r)
 
 
-# CREATE
+# CREATE - 기본 Create
 @bp.route("/new", methods=["GET", "POST"]) # naver.com/restaurant/update
 def create():
     if request.method == "POST":
@@ -76,7 +80,7 @@ def create():
                            tags=[],               # ← 안 써도 되지만 호환용
                            categories=categories)
 
-# UPDATE ─ 수정
+# UPDATE ─ 기본 Update
 @bp.route("/<int:r_id>/edit", methods=["GET", "POST"])
 def edit(r_id):
     r = Restaurant.query.get_or_404(r_id)
@@ -114,7 +118,7 @@ def edit(r_id):
                            categories=categories,
                            attached=attached)
 
-# DELETE ─ 삭제
+# DELETE ─ 기본 Delete
 @bp.route("/<int:r_id>/delete", methods=["POST"])
 def delete(r_id):
     r = Restaurant.query.get_or_404(r_id)

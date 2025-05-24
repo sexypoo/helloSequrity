@@ -1,10 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 import os
 
 db = SQLAlchemy()
-migrate = Migrate()
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
@@ -20,7 +18,6 @@ def create_app():
     )
 
     db.init_app(app)
-    migrate.init_app(app, db)
 
     from helloSecurity.routes.restaurant import bp as restaurants_bp
     app.register_blueprint(restaurants_bp)

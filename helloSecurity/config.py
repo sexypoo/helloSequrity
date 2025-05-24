@@ -1,6 +1,6 @@
 # helloSecurity/config.py
 import os
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))  # helloSecurity 폴더
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DB_PATH  = os.path.join(BASE_DIR, "instance", "app.db")
 
 class Config:

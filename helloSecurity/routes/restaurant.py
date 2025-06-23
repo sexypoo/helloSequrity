@@ -10,6 +10,7 @@ from datetime import time
 bp = Blueprint("restaurants", __name__, url_prefix="/") # 확장성 생각해 bp 사용함, 나중에 url 수정해주면 됨
 
 # READ - 메인 목록 리스트
+@bp.route("/")
 def index():
     MIN_RATING = 4 # 별점 필터링 용 별점 (int)
 
